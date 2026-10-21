@@ -70,7 +70,8 @@ public class NametagManager {
     }
 
     private void updatePlayerTeam(Scoreboard board, Player player, RoleInfo role, boolean isSneaking) {
-        String teamName = ("t_" + player.getName()).substring(0, Math.min(16, "t_" + player.getName().length()));
+        String rawName = "t_" + player.getName();
+        String teamName = rawName.length() <= 16 ? rawName : rawName.substring(0, 16);
         Team team = board.getTeam(teamName);
         if (team == null) {
             team = board.registerNewTeam(teamName);
@@ -82,7 +83,7 @@ public class NametagManager {
 
         if (isSneaking && config.isHideWhileSneaking()) {
             team.prefix(Component.empty());
-            team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.HIDE_FOR_OTHER_TEAMS);
+            team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
         } else {
             TextColor color = TextColor.fromHexString(role.color());
             Component prefix = Component.text(role.tag() + " ", color != null ? color : TextColor.color(0xFFFFFF));
@@ -93,7 +94,8 @@ public class NametagManager {
 
     public void removePlayer(Player player) {
         Scoreboard mainBoard = Bukkit.getScoreboardManager().getMainScoreboard();
-        String teamName = ("t_" + player.getName()).substring(0, Math.min(16, "t_" + player.getName().length()));
+        String rawName = "t_" + player.getName();
+        String teamName = rawName.length() <= 16 ? rawName : rawName.substring(0, 16);
         Team team = mainBoard.getTeam(teamName);
         if (team != null) {
             team.unregister();
