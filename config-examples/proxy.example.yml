@@ -1,0 +1,33 @@
+# Example only. Keep tokens/passwords in environment variables or a protected file.
+discord:
+  bot-token-env: RIZZLERS_DISCORD_TOKEN
+  guild-id: "YOUR_GUILD_ID"
+  log-channel-id: "YOUR_LOG_CHANNEL_ID"
+  role-cache-seconds: 60
+
+access:
+  enforcement: NETWORK
+  require-linked-account: true
+  allowed-role-ids:
+    - "YOUR_MEMBER_ACCESS_ROLE_ID"
+  blacklist-role-id: "YOUR_BLACKLIST_ROLE_ID"
+  blacklist-denial-message: "<red>Access denied: your linked Discord account is blacklisted from RIZZLERS.</red>"
+  unlinked-message: "<yellow>Link your Discord account to join RIZZLERS.</yellow>"
+  discord-api-failure-policy: DENY
+
+database:
+  host: "127.0.0.1"
+  port: 3306
+  name: "rizzlers"
+  username-env: RIZZLERS_DB_USER
+  password-env: RIZZLERS_DB_PASSWORD
+  pool-size: 8
+
+servers:
+  lobby: "lobby"
+  survival: "survival"
+
+linking:
+  code-expiry-seconds: 300
+  max-attempts-per-hour: 5
+  require-discord-confirmation: true

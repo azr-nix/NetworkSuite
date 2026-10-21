@@ -1,0 +1,88 @@
+name: Build and Release RIZZLERS Network Suite
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Test Network Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Temurin JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+          cache: 'maven'
+
+      - name: Run Maven Clean Verify (Automated Test Suites)
+        run: mvn --batch-mode clean verify
+
+      - name: Run Maven Package Build
+        run: mvn --batch-mode package
+
+      - name: Locate and Verify Compiled JARs
+        id: verify_jars
+        run: |
+          echo "=== Verifying Proxy JAR ==="
+          PROXY_JAR=$(find proxy/target -maxdepth 1 -name "RizzlersProxy*.jar" ! -name "original-*" | head -n 1)
+          if [ -z "$PROXY_JAR" ] || [ ! -f "$PROXY_JAR" ]; then
+            echo "ERROR: RizzlersProxy.jar not found in proxy/target/!"
+            ls -la proxy/target/
+            exit 1
+          fi
+          echo "Found Proxy JAR: $PROXY_JAR"
+          jar tf "$PROXY_JAR" | grep -E "velocity-plugin\.json" || { echo "ERROR: velocity-plugin.json missing in Proxy JAR"; exit 1; }
+          jar tf "$PROXY_JAR" | grep -E "RizzlersProxy\.class" || { echo "ERROR: RizzlersProxy.class missing"; exit 1; }
+          jar tf "$PROXY_JAR" | grep -E "AccessEvaluator\.class" || { echo "ERROR: AccessEvaluator.class missing"; exit 1; }
+
+          echo "=== Verifying Backend Tags JAR ==="
+          TAGS_JAR=$(find backend/target -maxdepth 1 -name "RizzlersTags*.jar" ! -name "original-*" | head -n 1)
+          if [ -z "$TAGS_JAR" ] || [ ! -f "$TAGS_JAR" ]; then
+            echo "ERROR: RizzlersTags.jar not found in backend/target/!"
+            ls -la backend/target/
+            exit 1
+          fi
+          echo "Found Tags JAR: $TAGS_JAR"
+          jar tf "$TAGS_JAR" | grep -E "plugin\.yml" || { echo "ERROR: plugin.yml missing in Tags JAR"; exit 1; }
+          jar tf "$TAGS_JAR" | grep -E "RizzlersTags\.class" || { echo "ERROR: RizzlersTags.class missing"; exit 1; }
+          jar tf "$TAGS_JAR" | grep -E "TagManager\.class" || { echo "ERROR: TagManager.class missing"; exit 1; }
+          jar tf "$TAGS_JAR" | grep -E "NametagManager\.class" || { echo "ERROR: NametagManager.class missing"; exit 1; }
+
+          mkdir -p artifacts
+          cp "$PROXY_JAR" artifacts/RizzlersProxy.jar
+          cp "$TAGS_JAR" artifacts/RizzlersTags.jar
+          echo "Artifacts prepared in artifacts/ directory."
+
+      - name: Upload GitHub Actions Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rizzlers-network-suite-1.0.0
+          path: artifacts/*.jar
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Publish GitHub Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "RIZZLERS Network Suite v1.0.0"
+          tag_name: "v1.0.0"
+          files: artifacts/*.jar
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,39 @@
+# RIZZLERS Proxy Configuration (Velocity 4.3)
+discord:
+  bot-token-env: "RIZZLERS_DISCORD_TOKEN"
+  bot-token: ""
+  guild-id: "YOUR_GUILD_ID"
+  log-channel-id: "YOUR_LOG_CHANNEL_ID"
+  role-cache-seconds: 60
+
+access:
+  enforcement: "NETWORK"
+  require-linked-account: true
+  allowed-role-ids:
+    - "YOUR_MEMBER_ACCESS_ROLE_ID"
+  blacklist-role-id: "YOUR_BLACKLIST_ROLE_ID"
+  blacklist-denial-message: "<red><bold>ACCESS DENIED</bold></red><newline><red>Your linked Discord account is blacklisted from RIZZLERS.<newline><gray>If you believe this is an error, please open a staff ticket.</gray></red>"
+  unlinked-message: "<red>You must link your Discord account before joining RIZZLERS.<newline><yellow>Run <bold>/plog link</bold> in-game or visit our Discord.</yellow></red>"
+  missing-access-role-message: "<red>Access denied: You do not have the required verified Discord role.</red>"
+  discord-api-failure-policy: "DENY"
+
+database:
+  driver: "mysql" # mysql or sqlite
+  host: "127.0.0.1"
+  port: 3306
+  name: "rizzlers"
+  username-env: "RIZZLERS_DB_USER"
+  username: "root"
+  password-env: "RIZZLERS_DB_PASSWORD"
+  password: ""
+  pool-size: 8
+  sqlite-file: "proxy_data.db"
+
+servers:
+  lobby: "lobby"
+  survival: "survival"
+
+linking:
+  code-expiry-seconds: 300
+  max-attempts-per-hour: 5
+  require-discord-confirmation: true

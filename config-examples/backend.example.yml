@@ -1,0 +1,54 @@
+server-name: lobby
+
+tags:
+  enabled: true
+  viewing-distance-blocks: 16
+  hide-while-sneaking: true
+  update-interval-ticks: 10
+  display-mode: HIGHEST_PRIORITY
+  chat:
+    enabled: true
+    format: "<gray>{tag}</gray> <white>{player}</white><dark_gray>: </dark_gray>{message}"
+
+# Survival backend example: set server-name: survival and distance to 24.
+roles:
+  member:
+    tag: "[MEMBER]"
+    color: "#BFC7D5"
+    priority: 10
+  staff:
+    tag: "[STAFF]"
+    color: "#FF626C"
+    priority: 100
+  developer:
+    tag: "[DEV]"
+    color: "#B77BFF"
+    priority: 90
+  youtuber:
+    tag: "[YOUTUBE]"
+    color: "#FF5555"
+    priority: 60
+  vip:
+    tag: "[VIP]"
+    color: "#FFD45E"
+    priority: 30
+  vip_plus:
+    tag: "[VIP+]"
+    color: "#FFB347"
+    priority: 40
+  vip_plus_plus:
+    tag: "[VIP++]"
+    color: "#FF8C42"
+    priority: 50
+  pvp_master:
+    tag: "[PVP MASTER]"
+    color: "#E74C3C"
+    priority: 25
+  bedwars:
+    tag: "[BEDWARS]"
+    color: "#E67E22"
+    priority: 20
+  parkour:
+    tag: "[PARKOUR]"
+    color: "#2ECC71"
+    priority: 20

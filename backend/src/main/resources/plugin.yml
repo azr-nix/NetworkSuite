@@ -1,0 +1,18 @@
+name: RizzlersTags
+version: 1.0.0
+main: online.rizzlers.tags.RizzlersTags
+api-version: '26.3'
+author: RIZZLERS
+description: Proximity nametags and chat prefix formatting for RIZZLERS network backends.
+commands:
+  tag:
+    description: Manage player nametags and in-game ranks
+    usage: /tag <grant|revoke|list|status|reload>
+    permission: rizzlerstags.admin
+permissions:
+  rizzlerstags.admin:
+    description: Administer player tags and ranks
+    default: op
+  rizzlerstags.use:
+    description: View own tag status
+    default: true
