@@ -313,6 +313,14 @@ public class ProxyDatabaseManager implements AutoCloseable {
         }
     }
 
+    public boolean unlinkAccountByDiscordId(String discordId) throws SQLException {
+        String sql = "UPDATE linked_accounts SET link_status = 'UNLINKED' WHERE discord_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, discordId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
     public void cacheDiscordRoles(String discordId, String guildId, Set<String> roleIds) {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
